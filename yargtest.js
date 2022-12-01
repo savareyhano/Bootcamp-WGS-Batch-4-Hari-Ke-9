@@ -2,6 +2,7 @@ const { argv } = require("yargs");
 const yargs = require("yargs");
 const yargfunct = require("./functions/yargfunct")
 
+// Command untuk menambahkan data pada file JSON
 yargs.command({
     command: 'add',
     describe: 'add new contact',
@@ -18,7 +19,7 @@ yargs.command({
         },
         mobile: {
             describe: 'contact mobile phone number',
-            demandOption: true,
+            demandOption: false,
             type: 'string',
         },
     },
@@ -33,6 +34,7 @@ yargs.command({
     },
 });
 
+// Command untuk menampilkan list data dari file JSON
 yargs.command({
     command: 'show',
     describe: 'show data from JSON file',
@@ -41,6 +43,7 @@ yargs.command({
     },
 });
 
+// Command untuk menampilkan data dari file JSON berdasarkan nama yang dicari
 yargs.command({
     command: 'find',
     describe: 'find a name',
@@ -49,6 +52,7 @@ yargs.command({
     }
 });
 
+// Command untuk menghapus data dari file JSON berdasarkan nama yang dicari
 yargs.command({
     command: 'delete',
     describe: 'delete value from JSON',
@@ -57,6 +61,7 @@ yargs.command({
     }
 });
 
+// Command untuk mengupdate data dari file JSON
 yargs.command({
     command: 'update',
     describe: 'update value from JSON',
@@ -83,14 +88,7 @@ yargs.command({
         },
     },
     handler(argv) {
-        const contact = {
-            name: argv.name,
-            email: argv.email,
-            mobile: argv.mobile,
-        };
-        // console.log(contact)
-        // yargfunct.del(argv.where);
-        yargfunct.up(argv.name, argv.email, argv.mobile, argv.where);
+        yargfunct.up(argv.where, argv.name, argv.email, argv.mobile);
     },
 });
 

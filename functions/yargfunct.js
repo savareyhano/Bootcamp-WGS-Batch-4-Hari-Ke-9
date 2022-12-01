@@ -1,4 +1,7 @@
 const fs = require('fs');
+const { default: isAlpha } = require('validator/lib/isAlpha');
+const { default: isEmail } = require('validator/lib/isEmail');
+const { default: isMobilePhone } = require('validator/lib/isMobilePhone');
 
 // Membuat folder data apabila tidak ada
 const dirPath = './data';
@@ -29,6 +32,7 @@ function save(name, email, phone) {
     }
 }
 
+// Menampilkan list dari file JSON
 function show() {
     const filedataObj = JSON.parse(read);
     for (let i = 0; i < filedataObj.length; i++) {
@@ -54,6 +58,7 @@ function show() {
     // })
 }
 
+// Menampilkan data dari file JSON berdasarkan nama yang dicari
 function getName(name) {
     const contacts = JSON.parse(read);
     const found = contacts.find((contact) => contact.name === name);
@@ -64,32 +69,41 @@ function getName(name) {
     }
 }
 
+// Menghapus data dari file JSON
 function del(name) {
     const contacts = JSON.parse(read);
     const fil = contacts.filter((contact) => contact.name !== name);
     fs.writeFileSync('data/contacts.json', JSON.stringify(fil));
 }
 
-function up(name, email, phone, where) {
-    const file = fs.readFileSync('data/contacts.json', 'utf-8');
-    const contacts = JSON.parse(file);
+// Mengupdate data pada file JSON berdasarkan nama yang dicari (menggunakan --where)
+function up(where, name, email, phone) {
+    const contacts = JSON.parse(read);
     const fil = contacts.find((contacts) => contacts.name === where);
-    // console.log(fil);
-    del(name)
-    // contacts.push(fil)
-    // const contact = fil
-    // contacts.push(contact);
+    del(name);
     if (name !== undefined) {
-        fil.name = name
+        if (isAlpha(name, 'en-US', { ignore: ' ' })) {
+            fil.name = name;
+        } else {
+            console.log('Nama tidak sesuai dengan format!');
+        }
     }
     if (email !== undefined) {
-        fil.email = email
+        if (isEmail(email)) {
+            fil.email = email;
+        } else {
+            console.log('Email tidak sesuai dengan format!');
+        }
     }
     if (phone !== undefined) {
-        fil.phone = phone
+        if (isMobilePhone(phone, 'id-ID')) {
+            fil.phone = phone;
+        } else {
+            console.log('No hp tidak sesuai dengan format!');
+        }
     }
     fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
-    // console.log('Terimakasih sudah memasukkan data!');
+    console.log('Data telah terupdate!');
 }
 
 module.exports = { save, show, getName, del, up };
